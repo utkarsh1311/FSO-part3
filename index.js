@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+app.use(express.json());
 
 let persons = [
 	{
@@ -24,6 +25,8 @@ let persons = [
 	},
 ];
 
+const generateID = () => Math.floor(Math.random() * 100);
+
 app.get("/", (request, response) => {
 	response.send("Hello world");
 });
@@ -40,6 +43,7 @@ app.get("/info", (request, response) => {
 
 app.get("/api/persons/:id", (request, response) => {
 	const ID = +request.params.id;
+
 	const person = persons.find((p) => p.id === ID);
 	if (!person) {
 		return response.status(404).end();
@@ -51,6 +55,23 @@ app.delete("/api/persons/:id", (request, response) => {
 	const ID = +request.params.id;
 	persons = persons.filter((person) => person.id !== ID);
 	response.status(204).end();
+});
+
+app.post("/api/persons", (request, response) => {
+	const body = req.body;
+	if (!body.name || !body.number) {
+		return response.status(400).json({
+			error: "Missing required information"
+		})
+	}
+
+	const newPerson = {
+		id: generateID(),
+		name: body.name,
+		number: body.number
+	}
+
+	persons = persons.concat(newPerson)
 });
 
 const PORT = 3001;
