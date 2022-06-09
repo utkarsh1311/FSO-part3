@@ -58,20 +58,38 @@ app.delete("/api/persons/:id", (request, response) => {
 });
 
 app.post("/api/persons", (request, response) => {
-	const body = req.body;
-	if (!body.name || !body.number) {
+	const body = request.body;
+
+	if (persons.some((p) => p.name === body.name)) {
 		return response.status(400).json({
-			error: "Missing required information"
-		})
+			error: "name must be unique",
+		});
+	}
+
+	if (!body.name && !body.number) {
+		return response.status(400).json({
+			error: "name and number is not specified in the request body",
+		});
+	}
+	if (!body.name) {
+		return response.status(400).json({
+			error: "name field is not speficied",
+		});
+	}
+	if (!body.number) {
+		return response.status(400).json({
+			error: "number field is not specified",
+		});
 	}
 
 	const newPerson = {
 		id: generateID(),
 		name: body.name,
-		number: body.number
-	}
+		number: body.number,
+	};
 
-	persons = persons.concat(newPerson)
+	persons = persons.concat(newPerson);
+	response.json(newPerson)
 });
 
 const PORT = 3001;
