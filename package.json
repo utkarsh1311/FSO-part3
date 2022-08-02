@@ -8,8 +8,8 @@
     "dev": "nodemon index.js",
     "build:ui": "rm -rf build && cd ../FullStackOpen/part2/phonebook && npm run build && cp -r build ../../../FSO-part3",
     "deploy": "git push heroku main",
-    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && npm run deploy",    
-    "logs:prod": "heroku logs --tail"    
+    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && npm run deploy",
+    "logs:prod": "heroku logs --tail"
   },
   "repository": {
     "type": "git",
@@ -27,6 +27,7 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.18.1",
+    "mongoose": "^6.5.0",
     "morgan": "^1.10.0"
   }
 }
