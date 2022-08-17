@@ -12,14 +12,23 @@ mongoose
     .catch(error => {
         console.err("Error connecting to the MongoDB: ", error.message);
     });
-
+    // let isnum = /^\d+$/.test(val);
 const personSchema = new mongoose.Schema({
     name: {
         type: String,
         minLength: 3,
         required: true,
     },
-    number: String,
+    number: {
+        type: String,
+        minLength: 8,
+        validate: function (val) {
+            if (/[a-zA-Z]/g.test(val)) 
+                return false
+            return true;
+        },
+        required: true,
+    },
 });
 
 personSchema.set("toJSON", {
