@@ -12,7 +12,9 @@ app.use(express.static("build"));
 app.use(cors());
 morgan.token("body", (req, res) => JSON.stringify(req.body));
 app.use(
-	morgan(":method :url :status :res[content-length] - :response-time ms :body")
+	morgan(
+		":method :url :status :res[content-length] - :response-time ms :body"
+	)
 );
 
 app.get("/", (request, response) => {
@@ -21,31 +23,33 @@ app.get("/", (request, response) => {
 
 app.get("/api/persons", (request, response) => {
 	Person.find({})
-		.then((persons) => {
+		.then(persons => {
 			response.json(persons);
 		})
-		.catch((error) => console.log(error));
+		.catch(error => console.log(error));
 });
 
 // route for getting count of documents in the collection
 app.get("/info", (request, response) => {
 	Person.count({}, (error, count) => {
-		response.send(`Phonebook has info for ${count} people <br/> ${new Date()}`);
-	}).catch((error) => console.log(error));
+		response.send(
+			`Phonebook has info for ${count} people <br/> ${new Date()}`
+		);
+	}).catch(error => console.log(error));
 });
 
 app.get("/api/persons/:id", (request, response, next) => {
 	Person.findById(request.params.id)
-		.then((returnedPerson) => response.json(returnedPerson))
-		.catch((error) => next(error));
+		.then(returnedPerson => response.json(returnedPerson))
+		.catch(error => next(error));
 });
 
 app.delete("/api/persons/:id", (request, response, next) => {
 	Person.findByIdAndRemove(request.params.id)
-		.then((result) => {
+		.then(() => {
 			response.status(204).end();
 		})
-		.catch((error) => next(error));
+		.catch(error => next(error));
 });
 
 app.put("/api/persons/:id", (request, response, next) => {
@@ -54,10 +58,10 @@ app.put("/api/persons/:id", (request, response, next) => {
 	Person.findByIdAndUpdate(
 		request.params.id,
 		{ name, number },
-		{ new: true, runValidators: true, context: 'query' }
+		{ new: true, runValidators: true, context: "query" }
 	)
-		.then((returnedPerson) => response.json(returnedPerson))
-		.catch((error) => next(error));
+		.then(returnedPerson => response.json(returnedPerson))
+		.catch(error => next(error));
 });
 
 app.post("/api/persons", (request, response, next) => {
@@ -86,8 +90,8 @@ app.post("/api/persons", (request, response, next) => {
 
 	newPerson
 		.save()
-		.then((savedPerson) => response.json(savedPerson))
-		.catch((error) => next(error));
+		.then(savedPerson => response.json(savedPerson))
+		.catch(error => next(error));
 });
 
 const errorHandler = (error, request, response, next) => {
