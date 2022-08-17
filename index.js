@@ -27,7 +27,6 @@ app.get("/api/persons", (request, response) => {
 		.catch((error) => console.log(error));
 });
 
-
 // route for getting count of documents in the collection
 app.get("/info", (request, response) => {
 	Person.count({}, (error, count) => {
@@ -50,19 +49,18 @@ app.delete("/api/persons/:id", (request, response, next) => {
 });
 
 app.put("/api/persons/:id", (request, response, next) => {
-	const body = request.body;
+	const { name, number } = request.body;
 
-	const person = {
-		name: body.name,
-		number: body.number,
-	};
-
-	Person.findByIdAndUpdate(request.params.id, person, { new: true })
+	Person.findByIdAndUpdate(
+		request.params.id,
+		{ name, number },
+		{ new: true, runValidators: true, context: 'query' }
+	)
 		.then((returnedPerson) => response.json(returnedPerson))
 		.catch((error) => next(error));
 });
 
-app.post("/api/persons", (request, response) => {
+app.post("/api/persons", (request, response, next) => {
 	const body = request.body;
 
 	if (!body.name && !body.number) {
@@ -86,7 +84,10 @@ app.post("/api/persons", (request, response) => {
 		number: body.number,
 	});
 
-	newPerson.save().then((savedPerson) => response.json(savedPerson));
+	newPerson
+		.save()
+		.then((savedPerson) => response.json(savedPerson))
+		.catch((error) => next(error));
 });
 
 const errorHandler = (error, request, response, next) => {
@@ -94,6 +95,8 @@ const errorHandler = (error, request, response, next) => {
 
 	if (error.name === "CastError") {
 		return response.status(400).send({ error: "malformatted id" });
+	} else if (error.name === "ValidationError") {
+		return response.status(400).json({ error: error.message });
 	}
 
 	next(error);
