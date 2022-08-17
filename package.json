@@ -24,8 +24,7 @@
 	"homepage": "https://github.com/utkarsh1311/FSO-part3#readme",
 	"devDependencies": {
 		"eslint": "^8.22.0",
-		"nodemon": "^2.0.16",
-		"prettier": "^2.7.1"
+		"nodemon": "^2.0.16"
 	},
 	"dependencies": {
 		"cors": "^2.8.5",
